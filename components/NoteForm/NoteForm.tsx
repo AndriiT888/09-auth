@@ -12,7 +12,7 @@ interface NoteFormProps {
   onCancel?: () => void;
 }
 
-const tags: NoteTag[] = ["Todo", "Work", "Personal", "Meeting", "Shopping"];
+const tags: NoteTag[] = ["todo", "work", "personal", "meeting", "shopping", "other"];
 
 export default function NoteForm({ onCancel }: NoteFormProps) {
   const router = useRouter();

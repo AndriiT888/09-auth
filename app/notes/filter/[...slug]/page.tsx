@@ -1,0 +1,68 @@
+import { dehydrate, QueryClient } from "@tanstack/react-query";
+import HydrateClient from "@/components/HydrateClient/HydrateClient";
+import { fetchNotes } from "@/lib/api";
+import type { NoteTag } from "@/types/note";
+import NotesClient from "./Notes.client";
+import type { Metadata } from "next";
+
+const PER_PAGE = 12;
+
+type TagParam = NoteTag | "all";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string[] };
+}): Promise<Metadata> {
+  const activeTag = (params?.slug?.[0] ?? "all") as TagParam;
+  const title = `NoteHub | Notes filtered by ${activeTag}`;
+  const description = `Browse notes filtered by "${activeTag}" in NoteHub.`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `https://notehub.com/notes/filter/${activeTag}`,
+      images: [
+        {
+          url: "https://ac.goit.global/fullstack/react/notehub-og-meta.jpg",
+        },
+      ],
+    },
+  };
+}
+
+export default async function NotesBySlugPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string[] }>;
+  searchParams?: { q?: string; page?: string };
+}) {
+  const { slug } = await params;
+
+  const activeTag = (slug?.[0] ?? "all") as TagParam;
+  const q = searchParams?.q ?? "";
+  const page = Number(searchParams?.page ?? "1");
+
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: ["notes", { page, perPage: PER_PAGE, search: q, tag: activeTag }],
+    queryFn: () =>
+      fetchNotes({
+        page,
+        perPage: PER_PAGE,
+        search: q || undefined,
+        tag: activeTag === "all" ? undefined : activeTag,
+      }),
+  });
+
+  return (
+    <HydrateClient state={dehydrate(queryClient)}>
+      <NotesClient initialQuery={q} initialPage={page} tag={activeTag} />
+    </HydrateClient>
+  );
+}

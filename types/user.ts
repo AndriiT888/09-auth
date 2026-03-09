@@ -1,19 +1,14 @@
 // types/user.ts
 
 export interface User {
-  id: string;
-  email: string;
+   email: string;
   username: string;
-  avatar?: string;
+  avatar: string;
 }
 
 export interface AuthPayload {
+username: string;
   email: string;
   password: string;
 }
 
-export interface UpdateUserPayload {
-  username?: string;
-  email?: string;
-  password?: string;
-}

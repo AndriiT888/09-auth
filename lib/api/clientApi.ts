@@ -7,8 +7,13 @@ import type {
   CreateNotePayload,
 } from "@/types/note";
 import type { AuthPayload, User } from "@/types/user";
-import type { UpdateUserPayload } from "@/types/user";
 
+// clientApi.ts
+type UpdateUserPayload = {
+  username?: string;
+  email?: string;
+  password?: string;
+};
 
 // Notes
 export const fetchNotes = async (

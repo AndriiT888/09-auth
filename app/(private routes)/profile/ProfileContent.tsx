@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import css from "./ProfilePage.module.css";
 import { useAuthStore } from "@/lib/store/authStore";
-import { getCurrentUser } from "@/lib/api/clientApi";
+import { getMe } from "@/lib/api/clientApi";
 
 const DEFAULT_AVATAR = "https://ac.goit.global/fullstack/react/avatar.png";
 
@@ -21,7 +21,7 @@ export default function ProfileContent() {
     const init = async () => {
       try {
         if (!user) {
-          const fetchedUser = await getCurrentUser();
+          const fetchedUser = await getMe();
           setUser(fetchedUser);
         }
       } catch {
@@ -61,7 +61,7 @@ export default function ProfileContent() {
 
         <div className={css.profileInfo}>
           <p className={css.usernameWrapper}>
-            Username: {user.username ?? user.name ?? "No username"}
+            Username: {user.username ?? user.username ?? "No username"}
           </p>
           <p>Email: {user.email ?? "No email"}</p>
         </div>

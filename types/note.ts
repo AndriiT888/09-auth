@@ -26,3 +26,4 @@ export interface CreateNotePayload {
   content?: string;
   tag: NoteTag;
 }
+

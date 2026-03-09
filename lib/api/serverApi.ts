@@ -41,16 +41,15 @@ export const fetchNoteById = async (id: string): Promise<Note> => {
   return res.data;
 };
 
-// Auth
-export const checkSession = async (): Promise<User | null> => {
+
+export const checkSession = async (): Promise<AxiosResponse<User | null>> => {
   const res: AxiosResponse<User | null> = await api.get(
     "/auth/session",
     await withCookies()
   );
-  return res.data;
+  return res; 
 };
 
-// User
 export const getMe = async (): Promise<User> => {
   const res: AxiosResponse<User> = await api.get(
     "/users/me",

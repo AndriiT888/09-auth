@@ -1,5 +1,5 @@
 import { dehydrate, QueryClient } from "@tanstack/react-query";
-import { fetchNoteById } from "@/lib/api";
+import { fetchNoteById } from "@/lib/api/serverApi";
 import HydrateClient from "@/components/HydrateClient/HydrateClient";
 import NoteDetailsClient from "./NoteDetails.client";
 import type { Metadata } from "next";

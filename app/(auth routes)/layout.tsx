@@ -1,14 +1,18 @@
-import type { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-  title: "NoteHub | Sign Up",
-  description: "Create a new NoteHub account.",
-};
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-export default function SignUpLayout({
+export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.refresh();
+  }, [router]);
+
   return <>{children}</>;
 }

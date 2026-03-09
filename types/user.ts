@@ -1,7 +1,10 @@
+// types/user.ts
+
 export interface User {
+  id: string;
   email: string;
   username: string;
-  avatar: string;
+  avatar?: string;
 }
 
 export interface AuthPayload {
@@ -10,8 +13,7 @@ export interface AuthPayload {
 }
 
 export interface UpdateUserPayload {
-  name?: string;
+  username?: string;
   email?: string;
-  avatar?: string;
   password?: string;
 }

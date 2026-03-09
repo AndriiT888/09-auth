@@ -6,10 +6,11 @@ import type {
   FetchNotesResponse,
   CreateNotePayload,
 } from "@/types/note";
-import type { AuthPayload, UpdateUserPayload, User } from "@/types/user";
+import type { AuthPayload, User } from "@/types/user";
+import type { UpdateUserPayload } from "@/types/user";
 
-// ============ Axios-based (через api instance) ============
 
+// Notes
 export const fetchNotes = async (
   params: FetchNotesParams
 ): Promise<FetchNotesResponse> => {
@@ -36,6 +37,7 @@ export const deleteNote = async (id: string): Promise<Note> => {
   return res.data;
 };
 
+// Auth
 export const register = async (payload: AuthPayload): Promise<User> => {
   const res: AxiosResponse<User> = await api.post("/auth/register", payload);
   return res.data;
@@ -55,6 +57,7 @@ export const checkSession = async (): Promise<User | null> => {
   return res.data;
 };
 
+// User
 export const getMe = async (): Promise<User> => {
   const res: AxiosResponse<User> = await api.get("/users/me");
   return res.data;
@@ -66,63 +69,3 @@ export const updateMe = async (
   const res: AxiosResponse<User> = await api.patch("/users/me", payload);
   return res.data;
 };
-
-// ============ Fetch-based (через Next.js API routes) ============
-
-type SignInData = {
-  email: string;
-  password: string;
-};
-
-export async function signInUser(data: SignInData) {
-  const res = await fetch("/api/auth/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify(data),
-  });
-
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({}));
-    throw new Error(error.message || "Invalid credentials");
-  }
-
-  return res.json();
-}
-
-export async function logoutUser() {
-  const res = await fetch("/api/auth/logout", {
-    method: "POST",
-    credentials: "include",
-  });
-
-  if (!res.ok) {
-    throw new Error("Logout failed");
-  }
-
-  return res.json().catch(() => ({}));
-}
-
-export async function getCurrentUser() {
-  const res = await fetch("/api/users/me", {
-    credentials: "include",
-  });
-
-  if (!res.ok) {
-    throw new Error("Not authenticated");
-  }
-
-  return res.json();
-}
-
-export async function updateUserName(username: string) {
-  const res = await fetch("/api/users/me", {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify({ username }),
-  });
-
-  if (!res.ok) throw new Error("Failed to update user");
-  return res.json();
-}

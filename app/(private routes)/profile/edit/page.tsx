@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import css from "./EditProfilePage.module.css";
 import { useAuthStore } from "@/lib/store/authStore";
-import { getCurrentUser } from "@/lib/api/clientApi";
+import { getMe, updateMe } from "@/lib/api/clientApi";
 
 const DEFAULT_AVATAR = "https://ac.goit.global/fullstack/react/avatar.png";
 
@@ -23,11 +23,11 @@ export default function EditProfilePage() {
     const init = async () => {
       try {
         if (user) {
-          setUsername(user.username ?? user.name ?? "");
+          setUsername(user.username ?? "");        
         } else {
-          const fetchedUser = await getCurrentUser();
+          const fetchedUser = await getMe();
           setUser(fetchedUser);
-          setUsername(fetchedUser.username ?? fetchedUser.name ?? "");
+          setUsername(fetchedUser.username ?? ""); 
         }
       } catch {
         router.replace("/sign-in");
@@ -44,23 +44,7 @@ export default function EditProfilePage() {
     setError("");
 
     try {
-      const res = await fetch("/api/users/me", {
-        method: "PATCH",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username }),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(
-          errorData.error ||
-            errorData.response?.message ||
-            "Failed to update profile"
-        );
-      }
-
-      const updatedUser = await res.json();
+      const updatedUser = await updateMe({ username });
       setUser(updatedUser);
       router.push("/profile");
     } catch (err: unknown) {

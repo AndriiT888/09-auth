@@ -4,7 +4,8 @@ import { useMemo, useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 
-import { fetchNotes } from "@/lib/api";
+
+import { fetchNotes } from "@/lib/api/clientApi";
 import type { NoteTag } from "@/types/note";
 import { useDebounce } from "@/components/hooks/useDebounce";
 

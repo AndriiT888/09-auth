@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/store/authStore";
-import { getCurrentUser, logoutUser } from "@/lib/api/clientApi";
+import { checkSession, getMe, logout } from "@/lib/api/clientApi";
 
-const PRIVATE_ROUTES = ["/profile"];
+const PRIVATE_ROUTES = ["/profile", "/notes"];
 
 export default function AuthProvider({
   children,
@@ -14,24 +14,16 @@ export default function AuthProvider({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-
   const setUser = useAuthStore((state) => state.setUser);
   const clearIsAuthenticated = useAuthStore(
     (state) => state.clearIsAuthenticated
   );
-
   const [loading, setLoading] = useState(true);
   const [authorized, setAuthorized] = useState(false);
 
   const isPrivate = PRIVATE_ROUTES.some((route) =>
     pathname.startsWith(route)
   );
-
-  useEffect(() => {
-  console.log("pathname:", pathname);
-  console.log("isPrivate:", isPrivate);
-  // ...
-}, [pathname]);
 
   useEffect(() => {
     let cancelled = false;
@@ -47,24 +39,23 @@ export default function AuthProvider({
       setAuthorized(false);
 
       try {
-        const user = await getCurrentUser();
+        const isSessionValid = await checkSession();
+
+        if (!isSessionValid) {
+          throw new Error("Session is not valid");
+        }
+
+        const user = await getMe();
 
         if (!cancelled) {
           setUser(user);
           setAuthorized(true);
         }
-      } catch (error: unknown) {
+      } catch {
         if (!cancelled) {
-          if (error instanceof Error) {
-            console.error("Auth check failed:", error.message);
-          }
-
           try {
-            await logoutUser();
-          } catch {
-            // logout може падати якщо cookie вже немає — ігноруємо
-          }
-
+            await logout();
+          } catch {}
           clearIsAuthenticated();
           setAuthorized(false);
           router.replace("/sign-in");
@@ -93,4 +84,3 @@ export default function AuthProvider({
 
   return <>{children}</>;
 }
-

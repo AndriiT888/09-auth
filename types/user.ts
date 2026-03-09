@@ -7,7 +7,6 @@ export interface User {
 }
 
 export interface AuthPayload {
-username: string;
   email: string;
   password: string;
 }

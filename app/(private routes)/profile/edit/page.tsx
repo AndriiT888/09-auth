@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import css from "./EditProfilePage.module.css";
 import { useAuthStore } from "@/lib/store/authStore";
-import { getMe} from "@/lib/api/clientApi";
+import { getMe, updateMe} from "@/lib/api/clientApi";
 
 const DEFAULT_AVATAR = "https://ac.goit.global/fullstack/react/avatar.png";
 
@@ -43,17 +43,17 @@ export default function EditProfilePage() {
     e.preventDefault();
     setError("");
 
-    // try {
-    //   const updatedUser = await updateMe({ username });
-    //   setUser(updatedUser);
-    //   router.push("/profile");
-    // } catch (err: unknown) {
-    //   if (err instanceof Error) {
-    //     setError(err.message);
-    //   } else {
-    //     setError("Something went wrong");
-    //   }
-    // }
+    try {
+      const updatedUser = await updateMe({ username });
+      setUser(updatedUser);
+      router.push("/profile");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Something went wrong");
+      }
+    }
   };
 
   const handleCancel = () => {

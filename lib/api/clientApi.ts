@@ -8,12 +8,12 @@ import type {
 } from "@/types/note";
 import type { AuthPayload, User } from "@/types/user";
 
-// // clientApi.ts
-// type UpdateUserPayload = {
-//   username?: string;
-//   email?: string;
-//   password?: string;
-// };
+// clientApi.ts
+type UpdateUserPayload = {
+  username?: string;
+  email?: string;
+  password?: string;
+};
 
 // Notes
 export const fetchNotes = async (
@@ -68,9 +68,9 @@ export const getMe = async (): Promise<User> => {
   return res.data;
 };
 
-// export const updateMe = async (
-//   payload: UpdateUserPayload
-// ): Promise<User> => {
-//   const res: AxiosResponse<User> = await api.patch("/users/me", payload);
-//   return res.data;
-// };
+export const updateMe = async (
+  payload: UpdateUserPayload
+): Promise<User> => {
+  const res: AxiosResponse<User> = await api.patch("/users/me", payload);
+  return res.data;
+};
